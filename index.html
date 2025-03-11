@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickReWin - Coming Soon</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@2.0.3/mdui.css">
+  <link rel="icon" href="/img/logo_demo.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --text-primary: #2196F3;
+      --text-secondary: #555;
+      --content-bg: rgba(255, 255, 255, 1); /* Solid background, no transparency */
+      --content-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      --footer-color: rgba(0, 0, 0, 0.6);
+      --overlay-color: rgba(0, 0, 0, 0.65); /* Darker overlay */
+      --divider-color: rgba(0, 0, 0, 0.1);
+      --theme-toggle-bg: #fff;
+      --theme-toggle-color: #333;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-primary: #64B5F6;
+      --text-secondary: #aaa;
+      --content-bg: rgba(30, 30, 30, 1); /* Solid background, no transparency */
+      --content-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      --footer-color: rgba(255, 255, 255, 0.6);
+      --overlay-color: rgba(0, 0, 0, 0.8); /* Much darker overlay for dark mode */
+      --divider-color: rgba(255, 255, 255, 0.1);
+      --theme-toggle-bg: #333;
+      --theme-toggle-color: #fff;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      background-color: var(--bg-color);
+      transition: background-color 0.3s ease;
+    }
+    
+    .hero-section {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/img/preview.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(12px) brightness(0.85); /* Increased blur and darkening */
+      transform: scale(1.1);
+      z-index: 0;
+      transition: filter 0.5s ease;
+    }
+
+    /* Dark overlay to make content more readable */
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--overlay-color);
+      z-index: 1;
+      transition: background-color 0.3s ease;
+    }
+    
+    .content-box {
+      background-color: var(--content-bg);
+      border-radius: 16px;
+      padding: 30px 25px 22px;
+      box-shadow: var(--content-shadow);
+      width: 90%;
+      max-width: 700px;
+      z-index: 2;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      /* Removed backdrop-filter blur effect */
+      transition: all 0.5s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+    }
+    
+    .logo-container {
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    
+    .logo-container h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 2.0rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .logo-container h3 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+      transition: color 0.3s ease;
+    }
+    
+    .preview-container {
+      text-align: center;
+      margin: 18px auto 15px;
+      max-width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    [data-theme="dark"] .preview-container {
+      box-shadow: none;
+    }
+    
+    .preview-image {
+      max-width: 95%;
+      transition: transform 0.8s ease, filter 0.5s ease;
+      cursor: pointer;
+      border-radius: 12px;
+      filter: brightness(1.05);
+      display: block;
+      margin: 0 auto;
+    }
+
+    [data-theme="dark"] .preview-image {
+      filter: brightness(0.95);
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 15px; 
+      color: var(--footer-color);
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: color 0.3s ease;
+    }
+    
+    /* Theme toggle button */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      background-color: var(--theme-toggle-bg);
+      color: var(--theme-toggle-color);
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    .theme-toggle svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.5s ease;
+    }
+
+    .theme-toggle:hover svg {
+      transform: rotate(30deg);
+    }
+    
+    /* Initial animations for page load */
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Thinner divider with reduced margins */
+    .mdui-divider {
+      margin: 10px 0; 
+      opacity: 0.7;
+      background-color: var(--divider-color);
+      transition: background-color 0.3s ease;
+    }
+    
+    /* Adjust MDUI spacing classes */
+    .mdui-m-t-3 {
+      margin-top: 12px !important;
+    }
+    
+    .mdui-m-b-3 {
+      margin-bottom: 12px !important;
+    }
+
+    /* Media queries for responsive design */
+    @media (max-width: 767px) {
+      .bg-image {
+        filter: blur(8px) brightness(0.85); /* Slightly less blur on mobile but still dark */
+      }
+      
+      .content-box {
+        width: 92%;
+        padding: 25px 18px 18px;
+        /* Removed backdrop-filter for mobile */
+      }
+      
+      .logo-container h1 {
+        font-size: 1.8rem;
+      }
+      
+      .logo-container h3 {
+        font-size: 0.9rem;
+      }
+      
+      /* Adjust preview image for mobile */
+      .preview-image {
+        width: 100%;
+      }
+      
+      /* Make zoom effect more appropriate for small screens */
+      .preview-image.zoomed {
+        transform: scale(1.2) !important;
+      }
+      
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
+        width: 38px;
+        height: 38px;
+      }
+
+      .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    /* Tablet optimization */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .bg-image {
+        filter: blur(10px) brightness(0.85); /* Medium blur for tablets */
+      }
+      
+      .content-box {
+        width: 85%;
+        padding: 28px 25px 20px;
+        max-width: 600px;
+      }
+      
+      /* Adjust zoom level for tablets */
+      .preview-image.zoomed {
+        transform: scale(1.3) !important;
+      }
+    }
+
+    /* Landscape orientation fixes */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .content-box {
+        max-height: 85vh;
+        padding: 15px;
+      }
+      
+      .logo-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 3px;
+      }
+      
+      .logo-container h3 {
+        font-size: 0.85rem;
+      }
+      
+      .preview-container {
+        margin: 10px auto;
+      }
+      
+      .mdui-divider {
+        margin: 5px 0;
+      }
+      
+      .footer {
+        margin-top: 8px;
+        font-size: 0.8rem;
+      }
+    }
+    
+    /* Optimize for very small screens */
+    @media (max-width: 360px) {
+      .content-box {
+        padding: 20px 15px;
+      }
+      
+      .logo-container h1 {
+        font-size: 1.6rem;
+      }
+      
+      .logo-container h3 {
+        font-size: 0.85rem;
+      }
+      
+      .theme-toggle {
+        width: 34px;
+        height: 34px;
+      }
+
+      .theme-toggle svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mdui-theme hero-section">
+    <div class="bg-image"></div>
+    
+    <!-- Theme toggle button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <!-- Sun icon (default for light mode) -->
+      <svg id="lightIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      
+      <!-- Moon icon (for dark mode) -->
+      <svg id="darkIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+    
+    <div class="content-box animate__animated animate__fadeIn">
+      <div class="logo-container animate__animated animate__fadeInDown">
+        <h1 class="mdui-text-center">QuickReWin</h1>
+        <h3 class="mdui-text-center fade-in-up">A Quick way to Reinstall your Windows</h3>
+      </div>     
+      <div class="mdui-divider"></div>
+      <!-- Preview image -->
+      <div class="preview-container mdui-m-t-3 mdui-m-b-3 animate__animated animate__fadeIn animate__delay-1s">
+        <img src="/img/preview.jpg" alt="QuickReWin Preview">
+      </div>
+      
+      <!-- Footer with copyright -->
+      <div class="footer animate__animated animate__fadeIn animate__delay-2s">
+        &copy; 2025 - QuickReWin
+      </div>
+    </div>
+  </div>
+
+  <!-- MDUI 2.0 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/mdui@2.0.3/mdui.global.min.js"></script>
+  
+  <script>
+    // Theme toggling functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const lightIcon = document.getElementById('lightIcon');
+    const darkIcon = document.getElementById('darkIcon');
+    const htmlElement = document.documentElement;
+    
+    // Check for saved theme preference or use prefers-color-scheme
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      htmlElement.setAttribute('data-theme', 'dark');
+      lightIcon.style.display = 'none';
+      darkIcon.style.display = 'block';
+    }
+    
+    // Handle theme toggle click
+    themeToggle.addEventListener('click', function() {
+      const currentTheme = htmlElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      htmlElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      // Update icon
+      if (newTheme === 'dark') {
+        lightIcon.style.display = 'none';
+        darkIcon.style.display = 'block';
+        darkIcon.classList.add('animate__animated', 'animate__rotateIn');
+        setTimeout(() => darkIcon.classList.remove('animate__animated', 'animate__rotateIn'), 500);
+      } else {
+        darkIcon.style.display = 'none';
+        lightIcon.style.display = 'block';
+        lightIcon.classList.add('animate__animated', 'animate__rotateIn');
+        setTimeout(() => lightIcon.classList.remove('animate__animated', 'animate__rotateIn'), 500);
+      }
+    });
+
+    // Add zoom effect to preview image on click with better touch support
+    const previewImage = document.querySelector('.preview-image');
+    
+    // Handle both click and touch events
+    previewImage.addEventListener('click', toggleZoom);
+    previewImage.addEventListener('touchend', function(e) {
+      e.preventDefault(); // Prevent default touch behavior
+      toggleZoom.call(this);
+    });
+    
+    function toggleZoom() {
+      this.classList.toggle('zoomed');
+      if(this.classList.contains('zoomed')) {
+        // Adjust zoom level based on screen size
+        const zoomLevel = window.innerWidth < 768 ? 1.2 : 
+                         window.innerWidth < 1025 ? 1.3 : 1.5;
+        this.style.transform = `scale(${zoomLevel})`;
+      } else {
+        this.style.transform = 'scale(1)';
+      }
+    }
+
+    // Device and orientation handling
+    function adjustForDevice() {
+      const contentBox = document.querySelector('.content-box');
+      // Check if device is in landscape and has a small height
+      if (window.innerWidth > window.innerHeight && window.innerHeight < 500) {
+        contentBox.style.maxHeight = '85vh';
+      } else {
+        contentBox.style.maxHeight = '90vh';
+      }
+      
+      // Adjust for mobile browsers with dynamic UI elements like address bars
+      if (window.innerWidth < 768) {
+        document.querySelector('.hero-section').style.height = `${window.innerHeight}px`;
+      } else {
+        document.querySelector('.hero-section').style.height = '100vh';
+      }
+    }
+    
+    // Run on page load and when orientation changes
+    window.addEventListener('DOMContentLoaded', adjustForDevice);
+    window.addEventListener('orientationchange', function() {
+      // Give browser time to update dimensions after orientation change
+      setTimeout(adjustForDevice, 100);
+    });
+    window.addEventListener('resize', adjustForDevice);
+  </script>
+</body>
+</html>
